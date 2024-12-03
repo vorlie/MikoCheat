@@ -40,6 +40,32 @@ Before running the project, ensure you have the following:
 
 ---
 
+### Updating Offsets
+
+Counter-Strike 2 updates often change memory addresses (offsets) used by this project. If the cheats stop working after an update, you'll need to update the offsets manually.
+
+#### Steps to Update Offsets
+1. **Locate the Changed Offsets:**
+   - Use tools like [IDA Pro](https://hex-rays.com/ida-pro/), [Cheat Engine](https://cheatengine.org/), or similar to analyze the game's memory after an update.
+   - Look for patterns or references to the old offsets in the updated binaries.
+
+2. **Update the Code:**
+   - Open the `Offsets.cs` file in the `MikoCheat` namespace.
+   - Replace outdated offsets with the new values you've identified.
+   - Example:  
+     ```csharp
+     public static int dwViewAngles = 0x1A5E650; // Update with the new value
+     ```
+
+3. **Rebuild the Project:**
+   - Save the updated `Offsets.cs` file.
+   - Rebuild the solution in Visual Studio by pressing `Ctrl+Shift+B`.
+
+4. **Test the Updated Cheats:**
+   - Launch the game and test to ensure everything works as expected.
+
+---
+
 ## Technical Overview
 
 - **Memory Reading/Writing**:
