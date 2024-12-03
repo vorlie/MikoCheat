@@ -66,7 +66,7 @@ Before running the project, ensure you have the following:
 - **Colors Tab**:
   - Customize colors for team and enemy ESP, aim-lock circle, and bones.
 
-### Keyboard Shortcuts
+### Panic Option
 - **Panic Button**: Instantly terminate the program from the settings tab.
 
 ---
