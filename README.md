@@ -52,7 +52,7 @@ Counter-Strike 2 updates often change memory addresses (offsets) used by this pr
 
 #### Steps to Update Offsets
 1. **Locate the Changed Offsets:**
-   - Use tools like [IDA Pro](https://hex-rays.com/ida-pro/), [Cheat Engine](https://cheatengine.org/), or similar to analyze the game's memory after an update.
+   - Use tools like [Cheat Engine](https://cheatengine.org/), or similar to analyze the game's memory after an update.
    - Look for patterns or references to the old offsets in the updated binaries.
 
 2. **Update the Code:**
