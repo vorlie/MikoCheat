@@ -17,9 +17,10 @@ namespace MikoCheat
         public bool targetTeam = false;
         public bool antiFlash = false;
         public bool boneESP = true;
-        public bool aimLockCircle = true;
+        public bool aimBotCircle = true;
         public bool autoBunnyHop = false;
         public float headSizeFloat = 5;
+        public float smoothingFactor = 0.5f;
         public bool menuVisible = true;
         private bool insertPressed = false;
         private DateTime lastKeyCheck = DateTime.MinValue;
@@ -81,19 +82,39 @@ namespace MikoCheat
                         // First Tab: Checkboxes and Sliders
                         if (ImGui.BeginTabItem("Settings"))
                         {
-                            ImGui.Checkbox("Aimlock", ref aimBot);
+                            ImGui.Checkbox("Aimbot", ref aimBot);
+                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Enable or disable the aimbot feature.");}
+
                             ImGui.Checkbox("Target Teammates", ref targetTeam);
+                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Toggle whether the aimbot targets teammates.");}
+
                             ImGui.Checkbox("AntiFlash", ref antiFlash);
-                            ImGui.Checkbox("AimLock Circle", ref aimLockCircle);
+                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Prevent flashbang effects from blinding you.");}
+
+                            ImGui.Checkbox("Aimbot Circle", ref aimBotCircle);
+                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Show or hide the aimbot circle.");}
+
                             ImGui.Checkbox("Auto Bunny Hop (Hold Space)", ref autoBunnyHop);
+                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Automatically jump repeatedly when holding the spacebar.");}
+
                             ImGui.Checkbox("ESP", ref boneESP);
-                            ImGui.SliderFloat("Aimlock Radius", ref Radius, 10, 300);
+                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Toggle bone ESP to show the skeletons of entities.");}
+
+                            ImGui.SliderFloat("Aimbot Radius", ref Radius, 10, 300);
+                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Set the radius within which the aimbot will target entities.");}
+
                             ImGui.SliderFloat("Bone Head Size", ref headSizeFloat, 3, 10);
+                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Adjust the size of the ESP head circles.");}
+
                             ImGui.SliderFloat("Bone Thickness", ref boneThickness, 4, 300);
-                            if (ImGui.Button("Panic Button"))
-                            {
-                                PanicTerminate();
-                            }
+                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Set the thickness of the ESP bone lines.");}
+
+                            ImGui.SliderFloat("Smoothing Factor", ref smoothingFactor, 0.1f, 1.0f);
+                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Adjust the smoothness of the aim transition. \nA lower value makes it smoother, while a higher value makes it snappier.");}
+
+                            if (ImGui.Button("Panic Button")){PanicTerminate();}
+                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Immediately terminates the cheat process.");}
+
                             ImGui.EndTabItem();
                         }
 
@@ -119,7 +140,7 @@ namespace MikoCheat
 
             DrawOverlay();
             drawList = ImGui.GetWindowDrawList();
-            if (aimLockCircle) { DrawAimLockCircle(); }
+            if (aimBotCircle) { DrawAimLockCircle(); }
             if (boneESP)
             {
                 foreach (var entity in entities)
