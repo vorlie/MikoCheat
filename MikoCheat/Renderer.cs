@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using ClickableTransparentOverlay;
@@ -19,6 +20,9 @@ namespace MikoCheat
         public bool aimLockCircle = true;
         public bool autoBunnyHop = false;
         public float headSizeFloat = 5;
+        public bool menuVisible = true;
+        private bool insertPressed = false;
+        private DateTime lastKeyCheck = DateTime.MinValue;
 
         public float Radius = 10;
 
@@ -37,49 +41,80 @@ namespace MikoCheat
         Vector4 nameColorShadow = new Vector4(0, 0, 0, 1);
 
         float boneThickness = 4;
+        
+
+        [DllImport("user32.dll")]
+        public static extern int GetAsyncKeyState(int vKey);
 
         protected override void Render()
         {
-            if (ImGui.Begin("MikoCheat"))
+            if ((DateTime.Now - lastKeyCheck).TotalMilliseconds >= 50)
             {
-                if (ImGui.BeginTabBar("Tabs"))
+                lastKeyCheck = DateTime.Now;
+
+                int INSERT = 0x2D; // Virtual key code for Insert
+                if ((GetAsyncKeyState(INSERT) & 0x8000) != 0)
                 {
-                    // First Tab: Checkboxes and Sliders
-                    if (ImGui.BeginTabItem("Settings"))
+                    if (!insertPressed)
                     {
-                        ImGui.Checkbox("Aimlock", ref aimBot);
-                        ImGui.Checkbox("Target Teammates", ref targetTeam);
-                        ImGui.Checkbox("AntiFlash", ref antiFlash);
-                        ImGui.Checkbox("AimLock Circle", ref aimLockCircle);
-                        ImGui.Checkbox("Auto Bunny Hop (Hold Space)", ref autoBunnyHop);
-                        ImGui.Checkbox("ESP", ref boneESP);
-                        ImGui.SliderFloat("Aimlock Radius", ref Radius, 10, 300);
-                        ImGui.SliderFloat("Bone Head Size", ref headSizeFloat, 3, 10);
-                        ImGui.SliderFloat("Bone Thickness", ref boneThickness, 4, 300);
-                        if (ImGui.Button("Panic Button"))
-                        {
-                            PanicTerminate();
-                        }
-                        ImGui.EndTabItem();
+                        menuVisible = !menuVisible;
+                        insertPressed = true;
                     }
-
-                    // Second Tab: Color Pickers
-                    if (ImGui.BeginTabItem("Colors"))
-                    {
-                        if (ImGui.CollapsingHeader("Radius Circle Color"))
-                            ImGui.ColorPicker4("##circlecolor", ref aimbotRadiusColor);
-                        if (ImGui.CollapsingHeader("ESP Team Color"))
-                            ImGui.ColorPicker4("##espteamcolor", ref teamColor);
-                        if (ImGui.CollapsingHeader("ESP Enemy Color"))
-                            ImGui.ColorPicker4("##espenemycolor", ref enemyColor);
-                        if (ImGui.CollapsingHeader("ESP Bone Color"))
-                            ImGui.ColorPicker4("##espbonecolor", ref boneColor);
-                        ImGui.EndTabItem();
-                    }
-
-                    ImGui.EndTabBar();
                 }
-                ImGui.End();
+                else
+                {
+                    insertPressed = false;
+                }
+            }
+
+            if (menuVisible)
+            {
+                if (ImGui.Begin("MikoCheat"))
+                {
+                    ImGui.TextColored(new Vector4(1, 0, 0, 1),
+                        "Disclaimer: Auto Bunny Hop and Anti Flash modify game memory and may be detected.");
+                    ImGui.TextColored(new Vector4(1, 1, 1, 1), 
+                        "Note: Use the Insert key to toggle the menu.");
+
+                    if (ImGui.BeginTabBar("Tabs"))
+                    {
+                        // First Tab: Checkboxes and Sliders
+                        if (ImGui.BeginTabItem("Settings"))
+                        {
+                            ImGui.Checkbox("Aimlock", ref aimBot);
+                            ImGui.Checkbox("Target Teammates", ref targetTeam);
+                            ImGui.Checkbox("AntiFlash", ref antiFlash);
+                            ImGui.Checkbox("AimLock Circle", ref aimLockCircle);
+                            ImGui.Checkbox("Auto Bunny Hop (Hold Space)", ref autoBunnyHop);
+                            ImGui.Checkbox("ESP", ref boneESP);
+                            ImGui.SliderFloat("Aimlock Radius", ref Radius, 10, 300);
+                            ImGui.SliderFloat("Bone Head Size", ref headSizeFloat, 3, 10);
+                            ImGui.SliderFloat("Bone Thickness", ref boneThickness, 4, 300);
+                            if (ImGui.Button("Panic Button"))
+                            {
+                                PanicTerminate();
+                            }
+                            ImGui.EndTabItem();
+                        }
+
+                        // Second Tab: Color Pickers
+                        if (ImGui.BeginTabItem("Colors"))
+                        {
+                            if (ImGui.CollapsingHeader("Radius Circle Color"))
+                                ImGui.ColorPicker4("##circlecolor", ref aimbotRadiusColor);
+                            if (ImGui.CollapsingHeader("ESP Team Color"))
+                                ImGui.ColorPicker4("##espteamcolor", ref teamColor);
+                            if (ImGui.CollapsingHeader("ESP Enemy Color"))
+                                ImGui.ColorPicker4("##espenemycolor", ref enemyColor);
+                            if (ImGui.CollapsingHeader("ESP Bone Color"))
+                                ImGui.ColorPicker4("##espbonecolor", ref boneColor);
+                            ImGui.EndTabItem();
+                        }
+
+                        ImGui.EndTabBar();
+                    }
+                    ImGui.End();
+                }
             }
 
             DrawOverlay();
