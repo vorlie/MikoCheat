@@ -4,6 +4,12 @@ MikoCheat is a proof-of-concept cheat for Counter-Strike 2 (CS2), featuring a cu
 
 ---
 
+## Disclaimer
+
+**This project is for educational purposes only.** Using cheats in multiplayer games is against the terms of service and can result in bans or other penalties. The author is not responsible for any misuse of this software.
+
+---
+
 ## Features
 
 - **Overlay Rendering**: Displays ESP, aim-lock circles, and more directly on top of the game window.
@@ -94,12 +100,6 @@ Counter-Strike 2 updates often change memory addresses (offsets) used by this pr
 
 ### Panic Option
 - **Panic Button**: Instantly terminate the program from the settings tab.
-
----
-
-## Disclaimer
-
-**This project is for educational purposes only.** Using cheats in multiplayer games is against the terms of service and can result in bans or other penalties. The author is not responsible for any misuse of this software.
 
 ---
 
