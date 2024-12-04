@@ -20,14 +20,14 @@ namespace MikoCheat
         public Vector2 position2D { get; set; }
         public Vector2 viewPosition2D { get; set; }
 
-        public string name { get; set; }
+        public string? name { get; set; }
         public int health { get; set; }
         public int team { get; set; }
         public uint lifeState { get; set; }
         public float distance { get; set; }
         public float pixelDistance { get; set; }
-        public List<Vector3> bones { get; set; }
-        public List<Vector2> bones2d { get; set; }
+        public List<Vector3>? bones { get; set; }
+        public List<Vector2>? bones2d { get; set; }
     }
 
     public enum BoneIds
