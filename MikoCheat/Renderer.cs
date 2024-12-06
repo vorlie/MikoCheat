@@ -13,6 +13,7 @@ namespace MikoCheat
 {
     public class Renderer : Overlay
     {
+        public string version = "v1.0";
         public bool aimBot = true;
         public bool targetTeam = false;
         public bool antiFlash = false;
@@ -70,7 +71,7 @@ namespace MikoCheat
 
             if (menuVisible)
             {
-                if (ImGui.Begin("MikoCheat"))
+                if (ImGui.Begin($"MikoCheat {version}"))
                 {
                     ImGui.TextColored(new Vector4(1, 0, 0, 1),
                         "Disclaimer: Auto Bunny Hop and Anti Flash modify game memory and may be detected.");
