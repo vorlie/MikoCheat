@@ -13,7 +13,7 @@ namespace MikoCheat
 {
     public class Renderer : Overlay
     {
-        public string version = "v1.0";
+        public string version = "v1.1";
         public bool aimBot = true;
         public bool targetTeam = false;
         public bool antiFlash = false;
