@@ -42,8 +42,6 @@ Swed swed = new Swed("cs2");
 
 IntPtr client = swed.GetModuleBase("client.dll");
 
-ValidateOffsets.Validate(swed, client);
-
 Renderer renderer = new Renderer();
 Thread renderThread = new Thread(new ThreadStart(renderer.Start().Wait));
 renderThread.Start();
