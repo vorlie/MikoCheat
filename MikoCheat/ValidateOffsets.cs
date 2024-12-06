@@ -16,7 +16,6 @@ namespace MikoCheat
 
             try
             {
-                // Example checks
                 IntPtr localPlayerPawn = swed.ReadPointer(clientBase, Offsets.dwLocalPlayerPawn);
                 if (localPlayerPawn == IntPtr.Zero)
                 {
