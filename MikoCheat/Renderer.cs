@@ -43,7 +43,6 @@ namespace MikoCheat
         Vector4 nameColorShadow = new Vector4(0, 0, 0, 1);
 
         float boneThickness = 4;
-        
 
         [DllImport("user32.dll")]
         public static extern int GetAsyncKeyState(int vKey);
@@ -75,46 +74,74 @@ namespace MikoCheat
                 {
                     ImGui.TextColored(new Vector4(1, 0, 0, 1),
                         "Disclaimer: Auto Bunny Hop and Anti Flash modify game memory and may be detected.");
-                    ImGui.TextColored(new Vector4(1, 1, 1, 1), 
+                    ImGui.TextColored(new Vector4(1, 1, 1, 1),
                         "Note: Use the Insert key to toggle the menu.");
 
                     if (ImGui.BeginTabBar("Tabs"))
-                    {
+                    {   
+                        // Presets Section
+                        if (ImGui.BeginTabItem("Presets"))
+                        {
+                            if (ImGui.Button("Legit"))
+                            {
+                                aimBot = true;
+                                targetTeam = false;
+                                antiFlash = false;
+                                autoBunnyHop = false;
+                                smoothingFactor = 0.5f;
+                                Radius = 10f;
+                            }
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Enable a configuration optimized for Legit Bot."); }
+
+                            if (ImGui.Button("ESP Only"))
+                            {
+                                aimBot = false;
+                                antiFlash = false;
+                                autoBunnyHop = false;
+                                boneESP = true;
+                            }
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Enable ESP only with no active aimbot or cheats."); }
+                            ImGui.EndTabItem();
+                        }
+
                         // First Tab: Checkboxes and Sliders
                         if (ImGui.BeginTabItem("Settings"))
                         {
                             ImGui.Checkbox("Aimbot", ref aimBot);
-                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Enable or disable the aimbot feature.");}
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Enable or disable the aimbot feature."); }
 
                             ImGui.Checkbox("Target Teammates", ref targetTeam);
-                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Toggle whether the aimbot targets teammates.");}
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Toggle whether the aimbot targets teammates."); }
 
                             ImGui.Checkbox("AntiFlash", ref antiFlash);
-                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Prevent flashbang effects from blinding you.");}
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Prevent flashbang effects from blinding you."); }
 
                             ImGui.Checkbox("Aimbot Circle", ref aimBotCircle);
-                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Show or hide the aimbot circle.");}
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Show or hide the aimbot circle."); }
 
                             ImGui.Checkbox("Auto Bunny Hop (Hold Space)", ref autoBunnyHop);
-                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Automatically jump repeatedly when holding the spacebar.");}
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Automatically jump repeatedly when holding the spacebar."); }
 
                             ImGui.Checkbox("ESP", ref boneESP);
-                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Toggle bone ESP to show the skeletons of entities.");}
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Toggle bone ESP to show the skeletons of entities."); }
 
                             ImGui.SliderFloat("Aimbot Radius", ref Radius, 10, 300);
-                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Set the radius within which the aimbot will target entities.");}
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Set the radius within which the aimbot will target entities."); }
 
                             ImGui.SliderFloat("Bone Head Size", ref headSizeFloat, 3, 10);
-                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Adjust the size of the ESP head circles.");}
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Adjust the size of the ESP head circles."); }
 
                             ImGui.SliderFloat("Bone Thickness", ref boneThickness, 4, 300);
-                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Set the thickness of the ESP bone lines.");}
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Set the thickness of the ESP bone lines."); }
 
                             ImGui.SliderFloat("Smoothing Factor", ref smoothingFactor, 0.1f, 1.0f);
-                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Adjust the smoothness of the aim transition. \nA lower value makes it smoother, while a higher value makes it snappier.");}
+                            if (ImGui.IsItemHovered())
+                            {
+                                ImGui.SetTooltip("Adjust the smoothness of the aim transition. \nA lower value makes it smoother, while a higher value makes it snappier.");
+                            }
 
-                            if (ImGui.Button("Panic Button")){PanicTerminate();}
-                            if (ImGui.IsItemHovered()){ImGui.SetTooltip("Immediately terminates the cheat process.");}
+                            if (ImGui.Button("Panic Button")) { PanicTerminate(); }
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Immediately terminates the cheat process."); }
 
                             ImGui.EndTabItem();
                         }
@@ -155,7 +182,6 @@ namespace MikoCheat
                         DrawName(entity, 20);
                     }
                 }
-
             }
         }
 
