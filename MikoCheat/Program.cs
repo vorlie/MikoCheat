@@ -139,6 +139,7 @@ while (true)
         int health = swed.ReadInt(currentPawn, Offsets.m_iHealth);
         int team = swed.ReadInt(currentPawn, Offsets.m_iTeamNum);
         uint lifeState = swed.ReadUInt(currentPawn, Offsets.m_lifeState);
+        bool spotted = swed.ReadBool(currentPawn, Offsets.m_entitySpottedState + Offsets.m_bSpotted);
 
         if (lifeState != 256) continue;
         if (team == localPlayer.team && !renderer.targetTeam) continue;
@@ -149,8 +150,9 @@ while (true)
         entity.pawnAddress = currentPawn;
         entity.controllerAddress = currentController;
         entity.health = health;
-        entity.team = team;
+        entity.team = team;    
         entity.lifeState = lifeState;
+        entity.spotted = spotted;
         entity.head = swed.ReadVec(boneMatrix, 6 * 32);
         entity.head2d = Calculate.WorldToScreen(viewMatrix, entity.head, screenSize);
         entity.position = swed.ReadVec(currentPawn, Offsets.m_vOldOrigin);
@@ -162,18 +164,7 @@ while (true)
         entity.bones2d = Calculate.ReadBones2d(entity.bones, viewMatrix, screenSize);
         entity.pixelDistance = Vector2.Distance(entity.head2d, new Vector2(screenSize.X / 2, screenSize.Y / 2));
 
-
         entities.Add(entity);
-
-        Console.ForegroundColor = ConsoleColor.Green;
-
-        if (team != localPlayer.team)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-        }
-        //Console.WriteLine($"{entity.health}hp, head coords: {entity.head}");
-
-        Console.ResetColor();
     }
     entities = entities.OrderBy(o => o.pixelDistance).ToList();
 
@@ -182,25 +173,27 @@ while (true)
     // Aim-lock logic
     if (entities.Count > 0 && renderer.aimBot)
     {
-        Vector3 playerView = Vector3.Add(localPlayer.origin, localPlayer.viewOffset);
-        Vector3 entityView = Vector3.Add(entities[0].origin, entities[0].origin);
-
-        if (entities[0].pixelDistance < renderer.Radius)
+        if (entities[0].spotted)
         {
-            Vector2 targetAngles = Calculate.CalculateAngles(playerView, entities[0].head);
-            Vector3 targetAnglesVec3 = new Vector3(targetAngles.Y, targetAngles.X, 0.0f);
+            Vector3 playerView = Vector3.Add(localPlayer.origin, localPlayer.viewOffset);
+            Vector3 entityView = Vector3.Add(entities[0].origin, entities[0].origin);
 
-            // Read current view angles
-            Vector3 currentAngles = swed.ReadVec(client, Offsets.dwViewAngles);
+            if (entities[0].pixelDistance < renderer.Radius)
+            {
+                Vector2 targetAngles = Calculate.CalculateAngles(playerView, entities[0].head);
+                Vector3 targetAnglesVec3 = new Vector3(targetAngles.Y, targetAngles.X, 0.0f);
 
-            // Smooth the transition from current to target angles
-            Vector3 smoothedAngles = Calculate.SmoothAngles(currentAngles, targetAnglesVec3, smoothingFactor);
+                // Read current view angles
+                Vector3 currentAngles = swed.ReadVec(client, Offsets.dwViewAngles);
 
-            // Write the smoothed angles
-            swed.WriteVec(client, Offsets.dwViewAngles, smoothedAngles);
+                // Smooth the transition from current to target angles
+                Vector3 smoothedAngles = Calculate.SmoothAngles(currentAngles, targetAnglesVec3, smoothingFactor);
+
+                // Write the smoothed angles
+                swed.WriteVec(client, Offsets.dwViewAngles, smoothedAngles);
+            }
         }
     }
-
 
     [DllImport("user32.dll")]
     static extern short GetAsyncKeyState(int vKey);

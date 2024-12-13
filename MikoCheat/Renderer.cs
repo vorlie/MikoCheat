@@ -13,7 +13,7 @@ namespace MikoCheat
 {
     public class Renderer : Overlay
     {
-        public string version = "v1.2";
+        public string version = "v1.3";
         public bool aimBot = true;
         public bool targetTeam = false;
         public bool antiFlash = false;
@@ -73,45 +73,22 @@ namespace MikoCheat
                 if (ImGui.Begin($"MikoCheat {version}"))
                 {
                     ImGui.TextColored(new Vector4(1, 0, 0, 1),
-                        "Disclaimer: Auto Bunny Hop and Anti Flash modify game memory and may be detected.");
+                        "Disclaimer: Auto Bunny Hop, Anti Flash and Aimbot modify game memory and may be detected.");
                     ImGui.TextColored(new Vector4(1, 1, 1, 1),
                         "Note: Use the Insert key to toggle the menu.");
+                    ImGui.TextColored(new Vector4(1, 1, 1, 1),
+                        "      Distance won't update if the entity is not moving.");
 
                     if (ImGui.BeginTabBar("Tabs"))
                     {   
-                        // Presets Section
-                        if (ImGui.BeginTabItem("Presets"))
-                        {
-                            if (ImGui.Button("Legit"))
-                            {
-                                aimBot = true;
-                                targetTeam = false;
-                                antiFlash = false;
-                                autoBunnyHop = false;
-                                smoothingFactor = 0.5f;
-                                Radius = 10f;
-                            }
-                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Enable a configuration optimized for Legit Bot."); }
-
-                            if (ImGui.Button("ESP Only"))
-                            {
-                                aimBot = false;
-                                antiFlash = false;
-                                autoBunnyHop = false;
-                                boneESP = true;
-                            }
-                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Enable ESP only with no active aimbot or cheats."); }
-                            ImGui.EndTabItem();
-                        }
-
                         // First Tab: Checkboxes and Sliders
                         if (ImGui.BeginTabItem("Settings"))
                         {
                             ImGui.Checkbox("Aimbot", ref aimBot);
-                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Enable or disable the aimbot feature."); }
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Enable or disable the aimbot feature. Works only if the entity is spotted."); }
 
                             ImGui.Checkbox("Target Teammates", ref targetTeam);
-                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Toggle whether the aimbot targets teammates."); }
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Toggle whether the aimbot/ESP targets teammates."); }
 
                             ImGui.Checkbox("AntiFlash", ref antiFlash);
                             if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Prevent flashbang effects from blinding you."); }
@@ -145,8 +122,31 @@ namespace MikoCheat
 
                             ImGui.EndTabItem();
                         }
+                        // Second Tab: Presets Section
+                        if (ImGui.BeginTabItem("Presets"))
+                        {
+                            if (ImGui.Button("Legit"))
+                            {
+                                aimBot = true;
+                                targetTeam = false;
+                                antiFlash = false;
+                                autoBunnyHop = false;
+                                smoothingFactor = 0.5f;
+                                Radius = 10f;
+                            }
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Enable a configuration optimized for Legit."); }
 
-                        // Second Tab: Color Pickers
+                            if (ImGui.Button("ESP Only"))
+                            {
+                                aimBot = false;
+                                antiFlash = false;
+                                autoBunnyHop = false;
+                                boneESP = true;
+                            }
+                            if (ImGui.IsItemHovered()) { ImGui.SetTooltip("Enable ESP only with no active aimbot or cheats."); }
+                            ImGui.EndTabItem();
+                        }
+                        // Third Tab: Color Pickers
                         if (ImGui.BeginTabItem("Colors"))
                         {
                             if (ImGui.CollapsingHeader("Radius Circle Color"))
@@ -180,6 +180,7 @@ namespace MikoCheat
                         DrawLines(entity);
                         DrawBones(entity);
                         DrawName(entity, 20);
+                        DrawDistance(entity, 20, 30);
                     }
                 }
             }
@@ -215,13 +216,26 @@ namespace MikoCheat
             drawList.AddCircle(new Vector2(screenSize.X / 2, screenSize.Y / 2), Radius, ImGui.ColorConvertFloat4ToU32(aimbotRadiusColor));
         }
 
+        private void DrawDistance(Entity entity, int yOffset, int xOffset)
+        {
+            // Make sure this distance is always up-to-date
+            float distance = entity.distance;
+
+            // Convert the distance to meters and display it
+            Vector2 textLocation = new Vector2(entity.viewPosition2D.X - xOffset, entity.viewPosition2D.Y - yOffset);
+            Vector2 textLocation2 = new Vector2(entity.viewPosition2D.X - xOffset + 1, entity.viewPosition2D.Y - yOffset + 1);
+
+            drawList.AddText(textLocation2, ImGui.ColorConvertFloat4ToU32(nameColorShadow), $"{(int)(distance) / 100}m");
+            drawList.AddText(textLocation, ImGui.ColorConvertFloat4ToU32(nameColor), $"{(int)(distance) / 100}m");
+        }
+
         private void DrawName(Entity entity, int yOffset)
         {
             Vector2 textLocation = new Vector2(entity.viewPosition2D.X,entity.viewPosition2D.Y - yOffset);
             Vector2 textLocation2 = new Vector2(entity.viewPosition2D.X + 1, entity.viewPosition2D.Y - yOffset + 1);
             drawList.AddText(textLocation2, ImGui.ColorConvertFloat4ToU32(nameColorShadow), $"{entity.name}");
             drawList.AddText(textLocation, ImGui.ColorConvertFloat4ToU32(nameColor), $"{entity.name}");
-            
+       
         }
 
         private void DrawHealthBar(Entity entity)
@@ -244,7 +258,9 @@ namespace MikoCheat
         {
             uint uintColor = ImGui.ColorConvertFloat4ToU32(boneColor);
 
-            float currentBoneThickness = boneThickness / entity.distance;
+            //float adjustedDistance = Math.Clamp(entity.distance, 1.0f, 100.0f);
+            //float currentBoneThickness = boneThickness / adjustedDistance;
+            float currentBoneThickness = boneThickness * (1.0f / (float)Math.Pow(entity.distance, 0.5f));
             float headSize = headSizeFloat;
 
             drawList.AddLine(entity.bones2d[1], entity.bones2d[2], uintColor, currentBoneThickness);
@@ -259,8 +275,7 @@ namespace MikoCheat
             drawList.AddLine(entity.bones2d[9], entity.bones2d[11], uintColor, currentBoneThickness);
             drawList.AddLine(entity.bones2d[9], entity.bones2d[10], uintColor, currentBoneThickness);
             drawList.AddLine(entity.bones2d[11], entity.bones2d[12], uintColor, currentBoneThickness);
-            drawList.AddCircle(entity.bones2d[2], headSize + currentBoneThickness, uintColor);
-
+            drawList.AddCircle(entity.bones2d[2], headSize, uintColor);
         }
 
         private void DrawBox(Entity entity)

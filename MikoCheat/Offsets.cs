@@ -31,5 +31,7 @@ namespace MikoCheat
         public static int m_modelState = 0x170;
         public static int m_pGameSceneNode = 0x328;
         public static int m_fFlags = 0x3EC;
+        public static int m_entitySpottedState = 0x23D0;
+        public static int m_bSpotted = 0x8;
     }
 }
