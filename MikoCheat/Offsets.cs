@@ -9,14 +9,14 @@ namespace MikoCheat
     public static class Offsets
     {
         // buttons.cs
-        public static int attack = 0x184E4D0;
-        public static int jump = 0x184E9E0;
+        public static int attack = 0x185D4C0;
+        public static int jump = 0x185D9D0;
 
         // offsets.cs
-        public static int dwViewAngles = 0x1A5E650;
-        public static int dwLocalPlayerPawn = 0x1855CE8;
-        public static int dwEntityList = 0x19F2488;
-        public static int dwViewMatrix = 0x1A54550;
+        public static int dwViewAngles = 0x1A6DD10;
+        public static int dwLocalPlayerPawn = 0x1864CC8;
+        public static int dwEntityList = 0x1A01AA8;
+        public static int dwViewMatrix = 0x1A63C10;
 
         // client.dll.cs
         public static int m_iIDEntIndex = 0x1458;

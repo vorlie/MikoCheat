@@ -168,7 +168,7 @@ while (true)
     }
     entities = entities.OrderBy(o => o.pixelDistance).ToList();
 
-    float smoothingFactor = renderer.smoothingFactor;
+    var smoothingFactor = renderer.smoothingFactor;
 
     // Aim-lock logic
     if (entities.Count > 0 && renderer.aimBot)
