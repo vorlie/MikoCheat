@@ -1,3 +1,7 @@
+# Information
+I will be not updating the offsets anymore. If you want to use it, update the offsets yourself and compile the project.
+
+
 # MikoCheat: A CS2 Overlay and Cheat
 
 MikoCheat is a proof-of-concept cheat for Counter-Strike 2 (CS2), featuring a customizable overlay built with ImGui.NET and ClickableTransparentOverlay. This project serves as an educational resource to understand game memory manipulation, overlay rendering, and cheat development concepts.
